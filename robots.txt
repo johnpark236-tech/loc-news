@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /data/
+
+Sitemap: https://johnpark236-tech.github.io/loc-news/sitemap.xml

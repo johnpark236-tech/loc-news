@@ -1,0 +1,43 @@
+# LOC News — Daily Article Automation
+# Phase 1: Manual trigger only (automation disabled until pipeline is validated)
+# Phase 2: Uncomment schedule to enable daily automation
+
+name: daily-articles
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: '0 22 * * *'  # KST 07:00 (UTC 22:00 prior day)
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install anthropic requests
+
+      - name: Run pipeline (dry-run in Phase 1)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+        run: |
+          echo "Phase 1: Pipeline not yet activated."
+          echo "Enable by uncommenting run_pipeline.py call below."
+          # python D:/loc_automation/scripts/run_pipeline.py
+
+      - name: Commit & push articles
+        run: |
+          git config user.name "LOC Automation"
+          git config user.email "automation@logofchoices.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "auto: daily articles $(date +%Y-%m-%d)"
+          git push
